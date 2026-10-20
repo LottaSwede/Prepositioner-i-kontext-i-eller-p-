@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prepositioner – i eller på?</title>
+<style>
+:root{--navy:#184f69;--teal:#347b8f;--ink:#2d3741;--line:#d8e1e5;--pale:#f3f8fa;--green:#218653;--red:#bf573c}
+*{box-sizing:border-box}
+body{margin:0;padding:20px;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#fff;line-height:1.65}
+main{max-width:900px;margin:0 auto}
+header{text-align:center;padding:18px 12px 22px;background:var(--pale);border-radius:16px;margin-bottom:20px}
+h1{margin:0;color:var(--navy);font-size:clamp(1.7rem,4vw,2.3rem)}
+.subtitle{margin:4px 0 0;color:var(--teal);font-weight:700}
+.instructions{margin:14px auto 0;max-width:650px}
+.part{border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:18px 0}
+h2{margin:0 0 10px;color:var(--navy);font-size:1.3rem}
+.question{padding:10px 0;border-bottom:1px solid #edf1f3}
+.question:last-child{border-bottom:0}
+.num{font-weight:700;color:var(--teal);margin-right:5px}
+select{font:inherit;color:var(--ink);background:#fff;border:1px solid #9db2bd;border-radius:7px;padding:4px 7px;margin:0 2px;min-width:74px}
+select:focus,button:focus{outline:3px solid #a8d8e4;outline-offset:2px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}
+button{font:inherit;font-weight:700;border:1px solid var(--line);border-radius:9px;padding:10px 16px;cursor:pointer;background:#fff;color:var(--navy)}
+button.primary{background:var(--navy);color:white;border-color:var(--navy)}
+#result{border-radius:12px;padding:14px;background:var(--pale);margin:16px 0;min-height:52px}
+.good{border-color:var(--green)!important;background:#f2fbf5}
+.bad{border-color:var(--red)!important;background:#fff5f1}
+.small{font-size:.92rem;color:#52636c}
+footer{text-align:center;color:#6a7b83;font-size:.85rem;margin:24px 0 8px}
+@media(max-width:560px){body{padding:12px}.part{padding:13px}.question{line-height:2.1}select{min-width:68px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>Prepositioner</h1>
+<div class="subtitle">I eller på?</div>
+<p class="instructions">Välj <strong>i</strong> eller <strong>på</strong> i varje lucka. Läs hela meningen innan du svarar. När du är klar klickar du på <strong>Rätta mina svar</strong>.</p>
+</header>
+<div id="exercise"></div>
+<div class="actions">
+<button class="primary" id="check">Rätta mina svar</button>
+<button id="show">Visa facit</button>
+<button id="reset">Börja om</button>
+</div>
+<div id="result" aria-live="polite">Lycka till!</div>
+<footer>Svenska med Lotta · Prepositioner: i eller på</footer>
+</main>
+<script>
+const sections=[
+{title:"Del 1 – Vardag och fritid",items:[
+["Jag bor [i] Sverige, [i] Göteborg, [i] city. Min lägenhet ligger mitt [på] Storgatan.",["i","i","i","på"]],
+["Jag älskar att promenera [på] gatorna och känna stadens liv och rörelse.",["på"]],
+["När jag behöver lugn går jag runt [i] skogen och lyssnar på fåglarna.",["i"]],
+["Ibland sätter jag mig [i] trädgården bland alla blommor.",["i"]],
+["Jag går ofta [på] restaurang, men ännu oftare bjuder jag vänner [på] middag.",["på","på"]],
+["Ibland går jag [på] ett mysigt café och dricker kaffe.",["på"]],
+["Köket är mitt bästa arbetsrum [i] lägenheten. Jag sitter gärna [i] köket och arbetar.",["i","i"]],
+["Min granne Olle ligger [på] sjukhuset, [på] avdelning 18, [på] sal 12.",["på","på","på"]],
+["Förr gick vi ofta [på] bio, men nu tittar vi [på] streamingtjänster tillsammans.",["på","på"]],
+["När solen skiner sitter jag [på] min balkong och drömmer om semestern [i] skärgården.",["på","i"]],
+["Kanske besöker jag en utställning [på] Arkipelag.",["på"]],
+["Anna handlar [i] mataffären medan jag sitter [på] mitt kontor och deltar [på] möten.",["i","på","på"]],
+["Ibland sitter jag [i] soffan och dricker kaffe.",["i"]],
+["Pelle är [i] skolan nu, men ibland ser jag honom leka [på] gården.",["i","på"]],
+["Stina går [i] terapi. Kanske går vi [i] kyrkan tillsammans.",["i","i"]]
+]},
+{title:"Del 2 – Vardagen i Stockholm",items:[
+["Jag bor [i] Stockholm, [på] Lilla Nygatan.",["i","på"]],
+["På morgonen sätter jag mig gärna [på] ett litet, mysigt kafé.",["på"]],
+["På helgerna bjuder jag släkt och vänner [på] middag.",["på"]],
+["Jag arbetar [på] ett sjukhus, [på] avdelningen för hudsjukdomar.",["på","på"]],
+["[På] sommaren fikar vi [på] en stor balkong med utsikt över Stockholm.",["på","på"]],
+["Ibland sitter jag [på] kontoret och arbetar.",["på"]],
+["Jag tycker om att hitta på saker [i] stan, till exempel att gå [på] Fotografiska eller Moderna museet.",["i","på"]],
+["Ibland promenerar jag [på] Djurgården och går runt [på] Rosendals trädgård.",["på","på"]],
+["Hemma [i] lägenheten sitter jag ofta [i] köket eller [i] vardagsrummet, [i] min sköna soffa.",["i","i","i","i"]],
+["Genom fönstret ser jag barn leka [på] gården.",["på"]],
+["Min vän Anna får hjälp genom att gå [på] terapi.",["på"]]
+]},
+{title:"Del 3 – En weekendresa",items:[
+["Förra året var jag [i] London [på] en weekendresa.",["i","på"]],
+["Först gick jag runt Trafalgar Square.",[]],
+["Sedan gick jag [på] British Museum och såg Rosettastenen och Tutankhamons sarkofag.",["på"]],
+["På kvällen gick jag [på] London Theatre och såg [på] en musikal, Mamma Mia!",["på","på"]],
+["Jag bodde [på] hotell Hilton och fick underbar service.",["på"]],
+["På hotellrummet låg jag länge [i] den sköna sängen på morgnarna.",["i"]],
+["På dagarna fikade jag [på] café och på kvällarna gick jag [på] några nattklubbar.",["på","på"]],
+["Jag undvek att gå [i] Hyde Park nattetid, men på dagarna promenerade jag gärna [i] den stora, vackra parken.",["i","i"]],
+["[På] flygplatsen gick jag runt [i] taxfreebutiken och köpte en parfym och en flaska cognac.",["på","i"]],
+["Sedan satte jag mig [på] en balkong och tittade på alla människor som skulle resa iväg.",["på"]],
+["Jag önskade att resan hade varit längre. Snart skulle jag sitta [på] kontoret igen.",["på"]],
+["Nästa semester kanske jag stannar [i] Sverige. Då vill jag sitta [i] en trädgård eller [på] en ö [i] skärgården.",["i","i","på","i"]],
+["För mig kan det kännas som att gå [i] terapi.",["i"]]
+]}
+];
+const root=document.getElementById('exercise');let fields=[];
+function render(){
+ root.innerHTML='';fields=[];
+ sections.forEach((section,si)=>{
+  const box=document.createElement('section');box.className='part';
+  const h=document.createElement('h2');h.textContent=section.title;box.appendChild(h);
+  section.items.forEach((item,qi)=>{
+   const row=document.createElement('div');row.className='question';
+   const num=document.createElement('span');num.className='num';num.textContent=(qi+1)+'.';row.appendChild(num);
+   let idx=0;
+   const parts=item[0].split(/(\[(?:i|på)\])/g);
+   parts.forEach(part=>{
+    if(/^\[(?:i|på)\]$/.test(part)){
+     const sel=document.createElement('select');sel.setAttribute('aria-label',`Del ${si+1}, fråga ${qi+1}, lucka ${idx+1}`);
+     const empty=document.createElement('option');empty.value='';empty.textContent='Välj';sel.appendChild(empty);
+     ['i','på'].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o)});
+     row.appendChild(sel);fields.push({el:sel,answer:item[1][idx]||null});idx++;
+    }else row.appendChild(document.createTextNode(part));
+   });
+   box.appendChild(row);
+  });
+  root.appendChild(box);
+ });
+ updateProgress();
+}
+function updateProgress(){
+ const answered=fields.filter(f=>f.el.value!=='').length;
+ document.getElementById('result').dataset.progress=`${answered} av ${fields.length} luckor besvarade.`;
+}
+function grade(showAll=false){
+ let correct=0,total=0,answered=0;
+ fields.forEach(f=>{
+  f.el.classList.remove('good','bad');
+  if(f.el.value)answered++;
+  if(!f.answer)return;
+  total++;
+  if(showAll){f.el.value=f.answer;f.el.classList.add('good');correct++}
+  else if(f.el.value===f.answer){f.el.classList.add('good');correct++}
+  else f.el.classList.add('bad');
+ });
+ const result=document.getElementById('result');
+ if(showAll)result.innerHTML=`<strong>Facit visas i alla luckor.</strong><p class="small">Du kan ändra svaren och rätta igen.</p>`;
+ else result.innerHTML=`<strong>Resultat: ${correct} av ${total} rätt.</strong><p class="small">${answered} av ${fields.length} luckor besvarade. Grönt = rätt svar. Rött = kontrollera svaret.</p>`;
+}
+document.getElementById('check').addEventListener('click',()=>grade(false));
+document.getElementById('show').addEventListener('click',()=>grade(true));
+document.getElementById('reset').addEventListener('click',()=>{render();document.getElementById('result').textContent='Lycka till!';});
+root.addEventListener('change',e=>{if(e.target.tagName==='SELECT'){e.target.classList.remove('good','bad');updateProgress()}});
+render();
+</script>
+</body>
+</html>
